@@ -1,0 +1,11 @@
+syntax = "proto3";
+package events;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message Event { google.protobuf.Timestamp time = 1; }
+
+service EventService {
+  rpc Observe(google.protobuf.Empty) returns (stream Event);
+}
