@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:client/generated/event.pbgrpc.dart';
+import 'package:client/src/event_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
-
   runApp(const MyApp());
 }
 
@@ -14,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -32,39 +36,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int i = 0;
-  late StreamSubscription streamSubscription;
-  final streamController = StreamController<int>();
+  late Stream<Event> stream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    stream = EventService.instance.observe();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      streamController.add(i++);
-      if (i > 10) {
-        timer.cancel();
-        streamController.close();
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Clock"),
+        title: const Text("Server clock"),
       ),
       body: Center(
         child: StreamBuilder(
-          stream: streamController.stream,
-          builder: (context, snapshot) {
+          stream: stream,
+          builder: (context, AsyncSnapshot<Event> snapshot) {
             if (!snapshot.hasData) {
+              print(snapshot);
+              if( snapshot.connectionState == ConnectionState.done) {
+                print("Connection lost. Exiting...");
+                exit(-1);
+              }
+
               return const CircularProgressIndicator();
             }
-            if (streamController.isClosed) {
-              return const Icon(
-                Icons.done,
-                color: Colors.greenAccent,
-              );
-            }
-            return Text("Data: ${snapshot.data}",
+            var time =
+                DateFormat('HH:mm:ss').format(snapshot.data!.time.toDateTime());
+            return Text("Time on the server\n$time",
                 style: const TextStyle(fontSize: 50, color: Colors.blue));
           },
         ),
