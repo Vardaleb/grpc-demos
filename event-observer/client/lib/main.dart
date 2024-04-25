@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:client/generated/event.pbgrpc.dart';
 import 'package:client/src/event_service.dart';
+import 'package:client/src/ui/result_table.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const EventObserverClient());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class EventObserverClient extends StatelessWidget {
+  const EventObserverClient({super.key});
 
   // This widget is the root of your application.
   @override
@@ -23,19 +23,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const EventObserverClientHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class EventObserverClientHomePage extends StatefulWidget {
+  const EventObserverClientHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<EventObserverClientHomePage> createState() =>
+      _EventObserverClientHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _EventObserverClientHomePageState
+    extends State<EventObserverClientHomePage> {
   late Stream<Event> stream;
 
   @override
@@ -57,18 +59,17 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: stream,
           builder: (context, AsyncSnapshot<Event> snapshot) {
             if (!snapshot.hasData) {
-              print(snapshot);
-              if( snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // ignore: avoid_print
                 print("Connection lost. Exiting...");
                 exit(-1);
               }
 
               return const CircularProgressIndicator();
             }
-            var time =
-                DateFormat('HH:mm:ss').format(snapshot.data!.time.toDateTime());
-            return Text("Time on the server\n$time",
-                style: const TextStyle(fontSize: 50, color: Colors.blue));
+            var event = snapshot.data!;
+
+            return ResultTable(event: event);
           },
         ),
       ),

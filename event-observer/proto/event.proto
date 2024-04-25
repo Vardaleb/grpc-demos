@@ -4,7 +4,11 @@ package events;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
-message Event { google.protobuf.Timestamp time = 1; }
+message Event {
+  google.protobuf.Timestamp time = 1;
+  int32 offset_seconds = 2;
+  string timezone_name = 3;
+}
 
 service EventService {
   rpc Observe(google.protobuf.Empty) returns (stream Event);

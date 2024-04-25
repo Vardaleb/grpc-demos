@@ -12,7 +12,11 @@ class EventService extends EventServiceBase {
       await Future.delayed(Duration(seconds: 1));
 
       // send new time event
-      yield Event(time: Timestamp.fromDateTime(DateTime.now()));
+      var dateTime = DateTime.now();
+      yield Event(
+          time: Timestamp.fromDateTime(dateTime),
+          offsetSeconds: dateTime.timeZoneOffset.inSeconds,
+          timezoneName: dateTime.timeZoneName);
     }
   }
 }
