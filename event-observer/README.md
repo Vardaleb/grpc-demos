@@ -20,5 +20,27 @@ service EventService {
 }
 ```
 # events
+The `dart` package contains all the generated classes from the `proto` directory. It exports them in the [`all.dart`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/events/lib/all.dart). Unfortunatly, the protobuf compiler for dart creates source code, that contains a warning. Therefore, this warning is disabled in the [`analysis_options.yaml`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/events/analysis_options.yaml):
+```yaml
+linter:
+  rules:
+    implementation_imports: false
+```
 # server
+The gRPC server implements the service method `Observe` in [`bin/dart.dart`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/server/dart/bin/dart.dart), by endlessly yielding an event every second. Its basically a clock ;-)
+```dart
+// send new time event
+var dateTime = DateTime.now();
+yield Event(
+    time: Timestamp.fromDateTime(dateTime),
+    offsetSeconds: dateTime.timeZoneOffset.inSeconds,
+    timezoneName: dateTime.timeZoneName);
+```
+Since the protobuf `Timestamp` provides times in UTC, the event message also contains information about the timezone, the time has been recorded.
+
+The server can be started in a specific timezone like this (e.g. in New York timezone):
+```bash
+$> TZ=America/New_York dart run
+```
+In a real world application, the server would yield messages, based on some events in the application. It also would offer some clean way to be terminated. In this example it runs, until the application is killed.
 # client
