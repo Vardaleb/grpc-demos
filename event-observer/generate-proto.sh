@@ -1,5 +1,5 @@
 #!/bin/bash
-LIBRARY_DIR=event_library/lib/src
+LIBRARY_DIR=events/lib/src
 
 mkdir -p $LIBRARY_DIR
 
