@@ -44,3 +44,37 @@ $> TZ=America/New_York dart run
 ```
 In a real world application, the server would yield messages, based on some events in the application. It also would offer some clean way to be terminated. In this example it runs, until the application is killed.
 # client
+The client has a class [`EventService`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/client/lib/src/event_service.dart), that encapsulates everything related to the gRPC client and is implemented as a singleton. In the method `_init` it connects to the gRPC server and creates the gRPC client stub `EventServiceClient`.
+
+Finally, the method `observe` returns the `ResponseStream<Event>`, which we will later use in a `StreamBuilder` widget:
+```dart
+ResponseStream<Event> observe() {
+    return stub.observe(Empty.getDefault());
+}
+```
+## Homepage widget
+The state of the `home` widget of the `MaterialApp` has a member for the stream, that is returned by `EventService.observe()`. It is created in the method `initState`:
+```dart
+class EventObserverClientHomePage extends StatefulWidget {
+  // [...]
+  late Stream<Event> stream;
+
+  @override
+  void initState() {
+    // [...]
+    stream = EventService.instance.observe();
+  }
+```
+
+The main widget in `body` is a [`StreamBuilder`](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html) widget. For the `stream` property it takes the stream member, we have created in `initState`. The `builder` property is a function, that is called, every time a new event is read from the stream (or if something happens to the stream). The `snapshot` parameter is annotated with the correct type, so we can access the data in a much cleaner way:
+```dart
+// [...]
+child: StreamBuilder(
+    stream: stream,
+    builder: (context, AsyncSnapshot<Event> snapshot) {
+      // [...]
+      var event = snapshot.data!;
+      return ResultTable(event: event); 
+    }
+```
+Finally, the [`ResultTable`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/client/lib/src/ui/result_table.dart) widget is responsible for displaying the event.
