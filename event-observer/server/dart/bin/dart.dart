@@ -1,6 +1,4 @@
-import 'package:dart/generated/event.pbgrpc.dart';
-import 'package:dart/generated/google/protobuf/empty.pb.dart';
-import 'package:dart/generated/google/protobuf/timestamp.pb.dart';
+import 'package:events/all.dart';
 import 'package:grpc/grpc.dart';
 
 class EventService extends EventServiceBase {

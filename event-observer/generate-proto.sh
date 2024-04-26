@@ -1,13 +1,10 @@
 #!/bin/bash
-CLIENT_DIR=client/lib/generated
-SERVER_DIR=server/dart/lib/generated
+LIBRARY_DIR=event_library/lib/src
 
-mkdir -p $CLIENT_DIR
-mkdir -p $SERVER_DIR
+mkdir -p $LIBRARY_DIR
 
 protoc \
-    --dart_out=grpc:$CLIENT_DIR \
-    --dart_out=grpc:$SERVER_DIR \
+    --dart_out=grpc:$LIBRARY_DIR \
     -Iproto \
     proto/event.proto \
     google/protobuf/timestamp.proto \

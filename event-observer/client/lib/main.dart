@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:client/generated/event.pbgrpc.dart';
 import 'package:client/src/event_service.dart';
 import 'package:client/src/ui/result_table.dart';
+import 'package:events/all.dart';
 import 'package:flutter/material.dart';
 
 void main() {

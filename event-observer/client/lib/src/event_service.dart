@@ -1,6 +1,6 @@
-import 'package:client/generated/event.pbgrpc.dart';
-import 'package:client/generated/google/protobuf/empty.pb.dart';
 import 'package:grpc/grpc.dart';
+import 'package:events/all.dart';
+
 
 class EventService {
   static final EventService _instance = EventService._internal();

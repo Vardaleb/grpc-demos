@@ -1,5 +1,5 @@
-import 'package:client/generated/event.pbgrpc.dart';
 import 'package:client/src/ui/header_cell.dart';
+import 'package:events/all.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
