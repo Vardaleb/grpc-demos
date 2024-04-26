@@ -53,7 +53,7 @@ ResponseStream<Event> observe() {
 }
 ```
 ## Homepage widget
-The state of the `home` widget of the `MaterialApp` has a member for the stream, that is returned by `EventService.observe()`. It is created in the method `initState`:
+The state of the `home` widget of the `MaterialApp` in [`main.dart`](https://github.com/Vardaleb/grpc-demos/blob/main/event-observer/client/lib/main.dart) has a member for the stream, that is returned by `EventService.observe()`. It is created in the method `initState`:
 ```dart
 class EventObserverClientHomePage extends StatefulWidget {
   // [...]
