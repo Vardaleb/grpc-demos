@@ -16,16 +16,17 @@ impl Greeter for GreeterImpl {
         let reply = hello::Greeting {
             message: format!("Hello, {}", message),
         };
-
+        println!("Responding with {:?}", reply);
         Ok(Response::new(reply))
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse()?;
+    let addr = "[::]:50051".parse()?;
     let greeter_impl = GreeterImpl::default();
 
+    println!("Server running... {:?}", addr);
     Server::builder()
         .add_service(GreeterServer::new(greeter_impl))
         .serve(addr)
