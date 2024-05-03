@@ -1,4 +1,6 @@
 syntax = "proto3";
+option go_package = "/gateway";
+
 package hello;
 
 message Greeting {
