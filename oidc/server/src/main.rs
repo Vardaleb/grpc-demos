@@ -1,44 +1,33 @@
+pub mod auth;
 pub mod demo;
 
+use std::sync::Arc;
+
+use auth::{AuthInterceptor, AuthServiceImpl};
 use demo::{
-    demo_server::{Demo, DemoServer},
-    DemoRequest, DemoResponse,
+    demo_service_server::DemoServiceServer, no_auth_demo_service_server::NoAuthDemoServiceServer,
 };
-use tonic::{transport::Server, Request, Response, Status};
 
-#[derive(Debug, Default)]
-pub struct DemoImpl {}
+use demo_impl::{DemoImpl, NoAuthDemoImpl};
+use tonic::transport::Server;
+use tonic_middleware::InterceptorFor;
 
-#[tonic::async_trait]
-impl Demo for DemoImpl {
-    async fn without_authentication(
-        &self,
-        _request: Request<DemoRequest>,
-    ) -> Result<Response<DemoResponse>, Status> {
-        let response = DemoResponse {
-            result: String::from("without authentication"),
-        };
-        Ok(Response::new(response))
-    }
-
-    async fn with_authentication(
-        &self,
-        _request: Request<DemoRequest>,
-    ) -> Result<Response<DemoResponse>, Status> {
-        let response = DemoResponse {
-            result: String::from("with authentication"),
-        };
-        Ok(Response::new(response))
-    }
-}
+mod demo_impl;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let demo_impl = DemoImpl::default();
+
+    let auth_interceptor = AuthInterceptor {
+        auth_service: Arc::new(AuthServiceImpl::default()),
+    };
 
     Server::builder()
-        .add_service(DemoServer::new(demo_impl))
+        .add_service(InterceptorFor::new(
+            DemoServiceServer::new(DemoImpl::default()),
+            auth_interceptor,
+        ))
+        .add_service(NoAuthDemoServiceServer::new(NoAuthDemoImpl::default()))
         .serve(addr)
         .await?;
 

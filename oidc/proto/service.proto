@@ -2,11 +2,17 @@ syntax = "proto3";
 
 package demo;
 
-service Demo {
-  rpc WithoutAuthentication(DemoRequest) returns (DemoResponse);
-  rpc WithAuthentication(DemoRequest) returns (DemoResponse);
+service DemoService {
+  rpc WithAuthentication(WithAuthenticationRequest)
+      returns (WithAuthenticationResponse);
 }
 
-message DemoRequest { string query = 1; }
+service NoAuthDemoService {
+  rpc WithoutAuthentication(WithoutAuthenticationRequest)
+      returns (WithoutAuthenticationResponse);
+}
 
-message DemoResponse { string result = 1; }
+message WithoutAuthenticationRequest { string query = 1; }
+message WithoutAuthenticationResponse { string result = 1; }
+message WithAuthenticationRequest { string query = 1; }
+message WithAuthenticationResponse { string result = 1; }
