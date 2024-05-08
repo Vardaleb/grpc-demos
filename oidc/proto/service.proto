@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package demo;
+
+service Demo {
+  rpc WithoutAuthentication(DemoRequest) returns (DemoResponse);
+  rpc WithAuthentication(DemoRequest) returns (DemoResponse);
+}
+
+message DemoRequest { string query = 1; }
+
+message DemoResponse { string result = 1; }
