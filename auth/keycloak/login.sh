@@ -40,6 +40,6 @@ function get_access_token() {
 
 # Get the access token
 TOKEN=$(get_access_token)
-echo "Access Token: $TOKEN"
-echo "Bearer Token:"
+# echo "Access Token: $TOKEN"
+# echo "Bearer Token:"
 echo "Bearer $TOKEN"

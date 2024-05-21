@@ -42,9 +42,6 @@ impl<A: AuthHandler> RequestInterceptor for AuthInterceptor<A> {
                 (None, _) => return Err(Status::unauthenticated("'Authorization' missing scheme")),
             };
 
-            println!("Scheme: {}", scheme);
-            println!("Params: {}", params);
-
             match self.auth_service.handle(scheme, params).await {
                 Ok(user) => {
                     self.add_user_metadata(&user, &mut req);
